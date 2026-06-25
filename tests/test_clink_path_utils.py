@@ -37,6 +37,20 @@ def test_collect_cli_path_candidates_includes_nvm_versions_without_alias(tmp_pat
     assert str(bin_dir) in candidates
 
 
+def test_collect_cli_path_candidates_orders_nvm_versions_semantically(tmp_path, monkeypatch):
+    nvm_dir = tmp_path / ".nvm"
+    older_bin = nvm_dir / "versions" / "node" / "v9.0.0" / "bin"
+    newer_bin = nvm_dir / "versions" / "node" / "v22.1.0" / "bin"
+    older_bin.mkdir(parents=True)
+    newer_bin.mkdir(parents=True)
+
+    monkeypatch.setenv("NVM_DIR", str(nvm_dir))
+    monkeypatch.setenv("HOME", str(tmp_path))
+
+    candidates = collect_cli_path_candidates()
+    assert candidates.index(str(newer_bin)) < candidates.index(str(older_bin))
+
+
 def test_augment_path_prepends_candidates_before_existing_entries(tmp_path, monkeypatch):
     nvm_dir = tmp_path / ".nvm"
     bin_dir = nvm_dir / "versions" / "node" / "v22.1.0" / "bin"

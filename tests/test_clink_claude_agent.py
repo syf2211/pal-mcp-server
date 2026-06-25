@@ -47,11 +47,11 @@ async def _run_agent_with_process(monkeypatch, agent, role, process, *, system_p
     async def fake_create_subprocess_exec(*_args, **_kwargs):
         return process
 
-    def fake_resolve_executable(executable_name, *, path=None):
+    def fake_which(executable_name, *, path=None):
         return f"/usr/bin/{executable_name}"
 
     monkeypatch.setattr(asyncio, "create_subprocess_exec", fake_create_subprocess_exec)
-    monkeypatch.setattr(clink_base, "resolve_executable", fake_resolve_executable)
+    monkeypatch.setattr(clink_base.shutil, "which", fake_which)
 
     return await agent.run(
         role=role,

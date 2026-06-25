@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -32,7 +33,11 @@ def _nvm_node_bin_dirs(nvm_dir: Path) -> list[str]:
 
     versions_dir = nvm_dir / "versions" / "node"
     if versions_dir.is_dir():
-        for node_bin in sorted(versions_dir.glob("*/bin"), reverse=True):
+
+        def version_key(path: Path) -> list[int]:
+            return [int(part) for part in re.findall(r"\d+", path.parent.name)]
+
+        for node_bin in sorted(versions_dir.glob("*/bin"), key=version_key, reverse=True):
             candidates.append(str(node_bin))
 
     return candidates
