@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import stat
 from pathlib import Path
 
@@ -68,4 +69,4 @@ async def test_codex_agent_resolves_nvm_installed_binary(monkeypatch, codex_agen
     assert captured["args"][0] == str(codex_path)
     env = captured["env"]
     assert env is not None
-    assert str(nvm_bin) in env["PATH"].split(":")
+    assert str(nvm_bin) in env["PATH"].split(os.pathsep)
