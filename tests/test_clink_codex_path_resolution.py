@@ -60,7 +60,9 @@ async def test_codex_agent_resolves_nvm_installed_binary(monkeypatch, codex_agen
     async def fake_create_subprocess_exec(*args, **_kwargs):
         captured["args"] = args
         captured["env"] = _kwargs.get("env")
-        return DummyProcess(stdout=b'{"type":"item.completed","item":{"type":"agent_message","text":"ok"}}', returncode=0)
+        return DummyProcess(
+            stdout=b'{"type":"item.completed","item":{"type":"agent_message","text":"ok"}}', returncode=0
+        )
 
     monkeypatch.setattr(asyncio, "create_subprocess_exec", fake_create_subprocess_exec)
 
