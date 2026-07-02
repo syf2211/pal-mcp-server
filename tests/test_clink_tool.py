@@ -225,3 +225,13 @@ async def test_prepare_prompt_includes_cli_specific_guidance():
 
     assert "Claude Code agent" in prompt
     assert "Gemini CLI agent" not in prompt
+
+
+@pytest.mark.asyncio
+async def test_prepare_prompt_defaults_cli_name():
+    tool = CLinkTool()
+    request = CLinkRequest(prompt="Review auth module")
+
+    prompt = await tool.prepare_prompt(request)
+
+    assert "Gemini CLI agent" in prompt

@@ -265,7 +265,10 @@ class CLinkTool(SimpleTool):
         return [TextContent(type="text", text=tool_output.model_dump_json())]
 
     async def prepare_prompt(self, request) -> str:
-        client_config = self._registry.get_client(request.cli_name)
+        selected_cli = request.cli_name or self._default_cli_name
+        if not selected_cli:
+            self._raise_tool_error("No CLI clients are configured for clink.")
+        client_config = self._registry.get_client(selected_cli)
         role_config = client_config.get_role(request.role)
         system_prompt_text = role_config.prompt_path.read_text(encoding="utf-8")
         include_system_prompt = not self._use_external_system_prompt(client_config)
